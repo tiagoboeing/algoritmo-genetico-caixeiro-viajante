@@ -1,5 +1,5 @@
 from builtins import filter
-from random import random
+from random import random, randint
 
 from cities import Cities
 from distance import Distance
@@ -17,59 +17,97 @@ class Individuals():
         self.visited_cities = []
         self.travelled_distance = 0
 
-        # sorteamos uma cidade para criar o cromossomo e verificamos se já foi visitada
-        # um cromossomo será o índice das cidades com length = qtde de cidades
+        # Cria cromossomos (não repete cidades)
         # Ex.: [0, 2, 3, 1] --> [A, C, D, B]
-        while len(self.chromosome) < len(cities):
-            shuffle_number = round(random() * (len(self.cities) - 1))
-            if shuffle_number not in self.chromosome:
-                self.chromosome.append(shuffle_number)
+        cities = []
+        for i in range(len(self.cities)):
+            cities.append(i)
+
+        while len(cities) > 0:
+            city = randint(0, len(cities) - 1)
+            self.chromosome.append(cities.pop(city))
 
     # Avaliação de aptidão
     def fitness(self):
-        note = 0
         sum_distance = 0
         current_city = self.chromosome[0]  # cidade de partida do cromossomo
 
         for i in range(len(self.chromosome)):
-            current_chromosome = self.chromosome[i]
-            if current_chromosome not in self.visited_cities:
-                d = Distance(self.cities)
-                sum_distance += d.get_distance(current_city, current_chromosome)  # somamos o caminho percorrido
-                self.visited_cities.append(current_chromosome)  # adiciona cromossomo como cidade visitada
-                current_city = current_chromosome
-            else:
-                # se existir cidade repetida no cromossomo --> descarta
-                note = -1
+            dest_city = self.chromosome[i]  # cidade atual no grafo
+            d = Distance(self.cities)
+            distance = d.get_distance(current_city, dest_city)
+            sum_distance += distance
+            self.visited_cities.append(dest_city)  # adiciona cromossomo como cidade visitada
+            current_city = dest_city
+
         self.travelled_distance = sum_distance
-        self.note_review = note
 
-    # Alteração dos cromossomos para trazer diversidade nas gerações
+    """
+    Alteração dos cromossomos para trazer diversidade nas gerações
+    Sorteia um gene no cromossomo e realiza a troca, respeitando o critério de não conter genes duplicados.
+    """
     def crossover(self, otherIndividual):
-        cut = round(random() * len(self.chromosome))
-
-        # primeira parte do cromossomo do outro individuo, com o restante da parte do cromosso atual
-        child1 = otherIndividual.chromosome[0:cut] + self.chromosome[cut::]
-        child2 = otherIndividual.chromosome[0:cut] + otherIndividual.chromosome[cut::]
+        genes_1 = self.chromosome
+        genes_2 = otherIndividual.chromosome
+        selected_gene = randint(0, len(genes_1) - 1)
+        self.exchange_gene(selected_gene, genes_1, genes_2)
+        exchanged_genes = []
+        exchanged_genes.append(selected_gene)
+        while True:
+            duplicated_gene = self.get_duplicated_gene(genes_1, exchanged_genes)
+            if (duplicated_gene == -1):
+                break
+            self.exchange_gene(duplicated_gene, genes_1, genes_2)
+            exchanged_genes.append(duplicated_gene)
 
         childs = [
             Individuals(self.time_distances, self.cities, self.generation + 1),
             Individuals(self.time_distances, self.cities, self.generation + 1)
         ]
 
-        childs[0].chromosome = child1
-        childs[1].chromosome = child2
+        childs[0].chromosome = genes_1
+        childs[1].chromosome = genes_2
 
         return childs
 
-    # Mutação
+    """
+    Realiza combinação dos genes de um cromossomo
+    """
+    def exchange_gene(self, gene, genes_1, genes_2):
+        tmp = genes_1[gene]
+        genes_1[gene] = genes_2[gene]
+        genes_2[gene] = tmp
+
+    """
+    Busca genes duplicados em um cromossomo
+    """
+    def get_duplicated_gene(self, genes, exchanged_genes):
+        for gene in range(len(genes)):
+            if gene in exchanged_genes:
+                continue
+
+            if len([g for g in genes if g == genes[gene]]) > 1:
+                return gene
+
+        return -1
+
+    """
+    Mutação
+    Sorteia um intervalo de 1% a 100%, se corresponder a taxa de mutação altera os genes
+    Respeita o critério de não existir genes duplicados
+    """
     def mutate(self, mutationRate):
-        for i in range(len(self.chromosome)):
-            if random() < mutationRate:
-                print("Realizando mutação no cromossomo %s" % self.chromosome)
-                self.chromosome[i] = round(random() * (len(self.chromosome) - 1))
-                print("Valor após mutação: %s" % self.chromosome)
-            return self
+        # sorteia um intervalo de 1% a 100%
+        if randint(1, 100) <= mutationRate:
+            print("Realizando mutação no cromossomo %s" % self.chromosome)
+            genes = self.chromosome
+            gene_1 = randint(0, len(genes) - 1)
+            gene_2 = randint(0, len(genes) - 1)
+            tmp = genes[gene_1]
+            genes[gene_1] = genes[gene_2]
+            genes[gene_2] = tmp
+            print("Valor após mutação: %s" % self.chromosome)
+        return self
 
 
 class GeneticAlgorithm():
@@ -77,53 +115,52 @@ class GeneticAlgorithm():
         self.populationSize = population_size
         self.population = []
         self.generation = 0
-        self.best_solution: None
+        self.best_solution: 0
         self.cities = cities
 
+    # time_distances será um array 2D
+    # cities será [City("A", [0, 10]), City("B", [10, 0])]
     def init_population(self, time_distances, cities):
-        # time_distances será um array 2D
-        # cities será [City("A", [0, 10]), City("B", [10, 0])]
         for i in range(self.populationSize):
             self.population.append(Individuals(time_distances, cities))
 
         self.best_solution = self.population[0]
 
     def sort_population(self):
-        # self.population = list(filter(lambda el: el.note_review != -1, self.population))
         self.population = sorted(self.population,
-                                 key=lambda population: population.note_review,
-                                 reverse=True)
+                                 key=lambda population: population.travelled_distance,
+                                 reverse=False)
 
+    # caso encontre um indívduo com menor distância o marcamos como melhor solução
     def best_individual(self, individual):
-        if individual.note_review > self.best_solution.note_review:
+        if individual.travelled_distance < self.best_solution.travelled_distance:
             self.best_solution = individual
 
+    # TODO: remover este método
     # Soma avaliação dos indivíduos
-    def sum_reviews(self):
+    def sum_travelled_distance(self):
         sum = 0
         for individual in self.population:
-            if individual.note_review != -1:
-                sum += individual.note_review
+            sum += individual.travelled_distance
         return sum
 
     # Seleciona pais (ROLETA)
-    def select_parents(self, sumReview):
-        parent = -1
-        sortedValue = random() * sumReview
+    def select_parents(self, sum_travelled_distances):
+        parent = -1  # nenhum indivíduo sorteado
+        sortedValue = random() * sum_travelled_distances
         sum = 0
         i = 0
         while i < len(self.population) and sum < sortedValue:
-            sum += self.population[i].note_review
+            sum += self.population[i].travelled_distance
             parent += 1
             i += 1
         return parent
 
     def view_generation(self):
         best = self.population[0]
-        print("G: %s -> Value: %s Espaço: %s Cromossomo: %s" % (
+        print("G: %s -> Value: %s Cromossomo: %s" % (
             best.generation,
-            best.note_review,
-            best.time_distances,
+            best.travelled_distance,
             best.chromosome
         ))
 
@@ -136,14 +173,15 @@ class GeneticAlgorithm():
         self.view_generation()
 
         for generation in range(generations):
-            sumReviews = self.sum_reviews()
+            sum_travelled_distance = self.sum_travelled_distance()
             newPopulation = []
 
-            for newIndividuals in range(0, self.populationSize, 2):
-                # seleciona dois indivíduos para combinar - cai na roleta
-                parent1 = self.select_parents(sumReviews)
-                parent2 = self.select_parents(sumReviews)
+            for i in range(0, self.populationSize, 2):
+                # seleciona dois indivíduos para reprodução - cai na roleta
+                parent1 = self.select_parents(sum_travelled_distance)
+                parent2 = self.select_parents(sum_travelled_distance)
 
+                # FIXME: -1 está causando problemas
                 # cria os filhos a partir de dois pais
                 childs = self.population[parent1].crossover(self.population[parent2])
 
@@ -155,6 +193,8 @@ class GeneticAlgorithm():
 
             for individual in self.population:
                 individual.fitness()
+                print("New population %s - Fitness %s" %
+                      (individual.chromosome, individual.travelled_distance))
 
             # ordena população para melhor solução estar na primeira posição
             self.sort_population()
@@ -163,9 +203,8 @@ class GeneticAlgorithm():
             best = self.population[0]
             self.best_individual(best)
 
-        print("\nMelhor solução -> G: %s Nota: %s - Distância percorrida: %s - Cromossomo: %s" % (
+        print("\nMelhor solução -> G: %s - Distância percorrida: %s - Cromossomo: %s" % (
             self.best_solution.generation,
-            self.best_solution.note_review,
             self.best_solution.travelled_distance,
             self.best_solution.chromosome
         ))
@@ -175,8 +214,8 @@ class GeneticAlgorithm():
 
 if __name__ == '__main__':
     population_size = 20
-    mutation_rate = 0.01
-    generations = 100
+    mutation_rate = 1  # 1% - taxa de mutação
+    generations = 1000
     time_distances = []
 
     c = Cities()
@@ -184,11 +223,11 @@ if __name__ == '__main__':
     cities = c.get_cities()
 
     for city in cities:
-        print("\nDistâncias da cidade: %s\n******" % city.name)
+        print("Distâncias da cidade: %s\n******" % city.name)
         time_distances.append(city.distances)
-        # print(city.distances)
-        # for index, distance in enumerate(city.distances):
-        # print("De %s --> %s = %s" % (city.name, cities[index].name, distance))
+        print(city.distances)
+        for index, distance in enumerate(city.distances):
+            print("De %s --> %s = %s" % (city.name, cities[index].name, distance))
 
     ga = GeneticAlgorithm(population_size)
     result = ga.resolve(mutation_rate, generations, time_distances, cities)
