@@ -204,7 +204,6 @@ class GeneticAlgorithm():
                 parent1 = self.select_parents(sum_travelled_distance)
                 parent2 = self.select_parents(sum_travelled_distance)
 
-                # FIXME: -1 está causando problemas
                 # cria os filhos a partir de dois pais
                 childs = self.population[parent1].crossover(self.population[parent2])
 
