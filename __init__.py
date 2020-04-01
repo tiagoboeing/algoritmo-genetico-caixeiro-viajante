@@ -16,6 +16,7 @@ class Individuals():
         self.chromosome = []
         self.visited_cities = []
         self.travelled_distance = 0
+        self.probability = 0
 
         # Cria cromossomos (não repete cidades)
         # Ex.: [0, 2, 3, 1] --> [A, C, D, B]
@@ -46,6 +47,7 @@ class Individuals():
     Alteração dos cromossomos para trazer diversidade nas gerações
     Sorteia um gene no cromossomo e realiza a troca, respeitando o critério de não conter genes duplicados.
     """
+
     def crossover(self, otherIndividual):
         genes_1 = self.chromosome
         genes_2 = otherIndividual.chromosome
@@ -73,6 +75,7 @@ class Individuals():
     """
     Realiza combinação dos genes de um cromossomo
     """
+
     def exchange_gene(self, gene, genes_1, genes_2):
         tmp = genes_1[gene]
         genes_1[gene] = genes_2[gene]
@@ -81,6 +84,7 @@ class Individuals():
     """
     Busca genes duplicados em um cromossomo
     """
+
     def get_duplicated_gene(self, genes, exchanged_genes):
         for gene in range(len(genes)):
             if gene in exchanged_genes:
@@ -96,6 +100,7 @@ class Individuals():
     Sorteia um intervalo de 1% a 100%, se corresponder a taxa de mutação altera os genes
     Respeita o critério de não existir genes duplicados
     """
+
     def mutate(self, mutationRate):
         # sorteia um intervalo de 1% a 100%
         if randint(1, 100) <= mutationRate:
@@ -136,22 +141,40 @@ class GeneticAlgorithm():
         if individual.travelled_distance < self.best_solution.travelled_distance:
             self.best_solution = individual
 
-    # TODO: remover este método
-    # Soma avaliação dos indivíduos
+    """
+    Soma distância percorrida por cada indivíduo da população
+    """
     def sum_travelled_distance(self):
         sum = 0
         for individual in self.population:
             sum += individual.travelled_distance
         return sum
 
-    # Seleciona pais (ROLETA)
+    """
+    Seleciona pais com base na roleta viciada
+    As cidades com menores distâncias são as que possuem maior chances de ser sorteadas
+    Distância e probabilidade são inversamente proporcionais (quanto menor a distância, maior a chance)
+    """
     def select_parents(self, sum_travelled_distances):
+        total_coefficient = 0
         parent = -1  # nenhum indivíduo sorteado
-        sortedValue = random() * sum_travelled_distances
         sum = 0
         i = 0
+
+        # criamos um coeficiente baseado na probabilidade do indivíduo ser selecionado e somamos
+        for index in range(len(self.population)):
+            total_coefficient += (1 / self.population[index].travelled_distance)
+
+        # geramos as probabilidades
+        for i_ in range(len(self.population)):
+            coefficient = (1 / self.population[i_].travelled_distance)
+            self.population[i_].probability = (coefficient / total_coefficient)
+
+        sortedValue = random()  # sorteamos um número da roleta (0 - 1) --> 0% a 100%
+
+        self.sort_population()
         while i < len(self.population) and sum < sortedValue:
-            sum += self.population[i].travelled_distance
+            sum += self.population[i].probability
             parent += 1
             i += 1
         return parent
@@ -215,7 +238,7 @@ class GeneticAlgorithm():
 if __name__ == '__main__':
     population_size = 20
     mutation_rate = 1  # 1% - taxa de mutação
-    generations = 1000
+    generations = 1000 # critério de parada
     time_distances = []
 
     c = Cities()
