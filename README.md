@@ -1,5 +1,8 @@
 # Algoritmos Genéticos - Problema do Caixeiro Viajante
 
+- API: Python
+- Frontend: Angular 8
+
 ## Critério de parada
 
 O número de gerações é o critério de parada.

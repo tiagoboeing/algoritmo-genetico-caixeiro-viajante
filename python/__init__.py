@@ -217,8 +217,9 @@ class GeneticAlgorithm():
 
             for individual in self.population:
                 individual.fitness()
-                print("New population %s - Fitness %s" %
-                      (individual.chromosome, individual.travelled_distance))
+                # Uncomment do debug
+                # print("New population %s - Fitness %s" %
+                #       (individual.chromosome, individual.travelled_distance))
 
             # ordena população para melhor solução estar na primeira posição
             self.sort_population()
@@ -233,24 +234,47 @@ class GeneticAlgorithm():
             self.best_solution.visited_cities
         ))
 
-        return [self.best_solution.generation, self.best_solution.travelled_distance, self.best_solution.visited_cities]
+        return [
+            self.best_solution.generation,
+            self.best_solution.travelled_distance,
+            self.best_solution.visited_cities
+        ]
 
 
 def init(event, context):
+    if event:
+        body = event['body-json']
+        population_size = body["populationSize"]
+        mutation_rate = body["mutationRate"]
+        generations = body["generations"]
+        body_cities = body['cities']
+        body_distances = body["distances"]
+    else:
+        body_cities = None
+        body_distances = None
+        population_size = 20
+        mutation_rate = 1  # 1% - taxa de mutação
+        generations = 1000  # critério de parada
+
     try:
-        if event:
-            population_size = event['pathParameters']['populationSize']
-            mutation_rate = event['pathParameters']['mutationRate']
-            generations = event['pathParameters']['generations']
-            time_distances = []
-        else:
-            population_size = 20
-            mutation_rate = 1  # 1% - taxa de mutação
-            generations = 1000  # critério de parada
-            time_distances = []
+        time_distances = []
+        population_size = int(population_size)
+        mutation_rate = int(mutation_rate)
+        generations = int(generations)
+
+        print(json.dumps({
+            'populationSize': population_size,
+            'mutationRate': mutation_rate,
+            'generations': generations,
+            'timeDistances': time_distances
+        }))
 
         c = Cities()
-        c.test()  # carrega cidades para testes
+        if body_cities and body_distances:
+            c.set_cities(body_cities, body_distances)
+        else:
+            c.test()  # carrega cidades para testes
+
         cities_list = c.get_cities()
 
         for city in cities_list:
@@ -263,19 +287,35 @@ def init(event, context):
         ga = GeneticAlgorithm(population_size)
         result = ga.resolve(mutation_rate, generations, time_distances, cities_list)
 
+        print({
+            'generation': result[0],
+            'travelled_distance': result[1],
+            'chromosome': result[2],
+            'cities': c.chromose_to_cities(result[2])
+        })
+
         return {
             'statusCode': 200,
             'body': json.dumps({
                 'generation': result[0],
                 'travelled_distance': result[1],
-                'chromosome': result[2]
+                'chromosome': result[2],
+                'cities': c.chromose_to_cities(result[2])
             })
         }
 
     except:
         return {
             'statusCode': 500,
-            'body': json.dumps({'message': "Erro ao executar"})
+            'body': json.dumps({
+                'message': "Erro ao executar",
+                'populationSize': population_size,
+                'mutationRate': mutation_rate,
+                'generations': generations,
+                'distances': body_distances,
+                'cities': body_cities,
+                'payload': body
+            })
         }
 
 

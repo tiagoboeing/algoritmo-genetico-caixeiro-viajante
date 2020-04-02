@@ -1,0 +1,144 @@
+<nb-card>
+  <nb-card-header>
+    Fill data
+    <span *ngIf="cities && cities.length > 0"
+      >({{ cities.length }} cities)</span
+    >
+
+    <button nbButton status="primary" (click)="addCity()">Add city</button>
+  </nb-card-header>
+  <nb-card-body>
+    <div [formGroup]="form">
+      <div
+        class="row mt-2"
+        formArrayName="cities"
+        *ngFor="let item of form.get('cities').controls; let i = index"
+      >
+        <div class="col col-11">
+          <div [formGroupName]="i">
+            <input
+              nbInput
+              fullWidth
+              formControlName="name"
+              placeholder="City name"
+            />
+          </div>
+        </div>
+        <div class="col">
+          <button nbButton ghost status="danger" (click)="removeCity(i)">
+            <nb-icon icon="minus-circle-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<!-- TODO: use ng-template for not replicate code blocks -->
+<nb-card>
+  <nb-card-header>
+    Informe o tempo entre as cidades
+  </nb-card-header>
+
+  <nb-card-body>
+    <div *ngFor="let time of manualTimes">
+      <div *ngIf="time">
+        <div class="row mt-2">
+          <div class="col-sm-6 col-md-3">
+            <label for="source" class="label">Origem</label>
+            <input
+              nbInput
+              fullWidth
+              id="source"
+              placeholder="Origem"
+              [value]="time.source"
+              disabled
+            />
+          </div>
+          <div class="col-sm-6 col-md-3">
+            <label for="dest" class="label">Destino</label>
+            <input
+              nbInput
+              fullWidth
+              id="dest"
+              placeholder="Destino"
+              [value]="time.dest"
+              disabled
+            />
+          </div>
+          <div
+            class="col-auto"
+            style="align-items: center; display: flex; padding-top: 20px;"
+          >
+            <span> = </span>
+          </div>
+          <div class="col-md-auto">
+            <label for="value" class="label">Valor (tempo)</label>
+            <input
+              nbInput
+              fullWidth
+              id="value"
+              placeholder="Valor"
+              [value]="time.value"
+              [disabled]="time.source === time.dest"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<nb-card>
+  <nb-card-header>
+    Preenchidas automaticamente
+  </nb-card-header>
+
+  <nb-card-body>
+    <div *ngFor="let time of times">
+      <div *ngIf="time">
+        <div class="row mt-2">
+          <div class="col-sm-6 col-md-3">
+            <label for="source" class="label">Origem</label>
+            <input
+              nbInput
+              fullWidth
+              id="source"
+              placeholder="Origem"
+              [value]="time.source"
+              [disabled]="time.source === time.dest"
+            />
+          </div>
+          <div class="col-sm-6 col-md-3">
+            <label for="dest" class="label">Destino</label>
+            <input
+              nbInput
+              fullWidth
+              id="dest"
+              placeholder="Destino"
+              [value]="time.dest"
+              [disabled]="time.source === time.dest"
+            />
+          </div>
+          <div
+            class="col-auto"
+            style="align-items: center; display: flex; padding-top: 20px;"
+          >
+            <span> = </span>
+          </div>
+          <div class="col-md-auto">
+            <label for="value" class="label">Valor (tempo)</label>
+            <input
+              nbInput
+              fullWidth
+              id="value"
+              placeholder="Valor"
+              [value]="time.value"
+              [disabled]="time.source === time.dest"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
