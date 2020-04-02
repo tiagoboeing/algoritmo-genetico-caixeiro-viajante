@@ -1,5 +1,4 @@
-import os
-from flask import Flask
+import json
 from random import random, randint
 
 from cities import Cities
@@ -117,7 +116,7 @@ class Individuals():
 
 
 class GeneticAlgorithm():
-    def __init__(self, population_size=20):
+    def __init__(self, population_size=20, cities=[]):
         self.populationSize = population_size
         self.population = []
         self.generation = 0
@@ -137,7 +136,7 @@ class GeneticAlgorithm():
                                  key=lambda population: population.travelled_distance,
                                  reverse=False)
 
-    # caso encontre um indívduo com menor distância o marcamos como melhor solução
+    # caso encontre um indivíduo com menor distância o marcamos como melhor solução
     def best_individual(self, individual):
         if individual.travelled_distance < self.best_solution.travelled_distance:
             self.best_solution = individual
@@ -234,14 +233,10 @@ class GeneticAlgorithm():
             self.best_solution.chromosome
         ))
 
-        return self.best_solution.chromosome
+        return [self.best_solution.generation, self.best_solution.travelled_distance, self.best_solution.chromosome]
 
 
-app = Flask(__name__)
-
-
-@app.route('/')
-def index(self):
+def init(event, context):
     try:
         population_size = 20
         mutation_rate = 1  # 1% - taxa de mutação
@@ -250,23 +245,27 @@ def index(self):
 
         c = Cities()
         c.test()  # carrega cidades para testes
-        cities = c.get_cities()
+        cities_list = c.get_cities()
 
-        for city in cities:
+        for city in cities_list:
             print("Distâncias da cidade: %s\n******" % city.name)
             time_distances.append(city.distances)
             print(city.distances)
             for index, distance in enumerate(city.distances):
-                print("De %s --> %s = %s" % (city.name, cities[index].name, distance))
+                print("De %s --> %s = %s" % (city.name, cities_list[index].name, distance))
 
         ga = GeneticAlgorithm(population_size)
-        result = ga.resolve(mutation_rate, generations, time_distances, cities)
+        result = ga.resolve(mutation_rate, generations, time_distances, cities_list)
 
-        return result
+        return json.dumps({
+            'generation': result[0],
+            'travelled_distance': result[1],
+            'chromosome': result[2]
+        })
+
     except:
-        return "Ocorreu um erro!"
+        return json.dumps({'message': "Erro ao executar"})
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    init(None, None)
