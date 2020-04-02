@@ -230,18 +230,24 @@ class GeneticAlgorithm():
         print("\nMelhor solução -> G: %s - Distância percorrida: %s - Cromossomo: %s" % (
             self.best_solution.generation,
             self.best_solution.travelled_distance,
-            self.best_solution.chromosome
+            self.best_solution.visited_cities
         ))
 
-        return [self.best_solution.generation, self.best_solution.travelled_distance, self.best_solution.chromosome]
+        return [self.best_solution.generation, self.best_solution.travelled_distance, self.best_solution.visited_cities]
 
 
 def init(event, context):
     try:
-        population_size = 20
-        mutation_rate = 1  # 1% - taxa de mutação
-        generations = 1000  # critério de parada
-        time_distances = []
+        if event:
+            population_size = event['pathParameters']['populationSize']
+            mutation_rate = event['pathParameters']['mutationRate']
+            generations = event['pathParameters']['generations']
+            time_distances = []
+        else:
+            population_size = 20
+            mutation_rate = 1  # 1% - taxa de mutação
+            generations = 1000  # critério de parada
+            time_distances = []
 
         c = Cities()
         c.test()  # carrega cidades para testes
@@ -257,14 +263,20 @@ def init(event, context):
         ga = GeneticAlgorithm(population_size)
         result = ga.resolve(mutation_rate, generations, time_distances, cities_list)
 
-        return json.dumps({
-            'generation': result[0],
-            'travelled_distance': result[1],
-            'chromosome': result[2]
-        })
+        return {
+            'statusCode': 200,
+            'body': json.dumps({
+                'generation': result[0],
+                'travelled_distance': result[1],
+                'chromosome': result[2]
+            })
+        }
 
     except:
-        return json.dumps({'message': "Erro ao executar"})
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'message': "Erro ao executar"})
+        }
 
 
 if __name__ == "__main__":
