@@ -1,11 +1,24 @@
+<button
+  nbButton
+  fullWidth
+  status="primary"
+  class="mb-4"
+  [disabled]="form.value.cities.length <= 1"
+  (click)="getSolution(form.value)"
+>
+  Encontrar solução
+</button>
+
 <nb-card>
   <nb-card-header>
-    Fill data
-    <span *ngIf="cities && cities.length > 0"
+    Cadastre as cidades
+    <span *ngIf="cities && cities.length > 0" class="mr-3"
       >({{ cities.length }} cities)</span
     >
 
-    <button nbButton status="primary" (click)="addCity()">Add city</button>
+    <button nbButton status="secondary" class="float-right" (click)="addCity()">
+      Adicionar cidade
+    </button>
   </nb-card-header>
   <nb-card-body>
     <div [formGroup]="form">
@@ -20,7 +33,7 @@
               nbInput
               fullWidth
               formControlName="name"
-              placeholder="City name"
+              placeholder="Nome da cidade"
             />
           </div>
         </div>
@@ -41,26 +54,26 @@
   </nb-card-header>
 
   <nb-card-body>
-    <div *ngFor="let time of manualTimes">
+    <div *ngFor="let time of manualTimes; let i = index">
       <div *ngIf="time">
         <div class="row mt-2">
           <div class="col-sm-6 col-md-3">
-            <label for="source" class="label">Origem</label>
+            <label for="source{{i}}" class="label">Origem</label>
             <input
               nbInput
               fullWidth
-              id="source"
+              id="source{{i}}"
               placeholder="Origem"
               [value]="time.source"
               disabled
             />
           </div>
           <div class="col-sm-6 col-md-3">
-            <label for="dest" class="label">Destino</label>
+            <label for="dest{{i}}" class="label">Destino</label>
             <input
               nbInput
               fullWidth
-              id="dest"
+              id="dest{{i}}"
               placeholder="Destino"
               [value]="time.dest"
               disabled
@@ -73,13 +86,15 @@
             <span> = </span>
           </div>
           <div class="col-md-auto">
-            <label for="value" class="label">Valor (tempo)</label>
+            <label for="value{{i}}" class="label">Valor (tempo)</label>
             <input
+              type="number"
               nbInput
               fullWidth
-              id="value"
+              id="value{{i}}"
               placeholder="Valor"
               [value]="time.value"
+              [(ngModel)]="time.value"
               [disabled]="time.source === time.dest"
             />
           </div>
@@ -95,26 +110,26 @@
   </nb-card-header>
 
   <nb-card-body>
-    <div *ngFor="let time of times">
+    <div *ngFor="let time of times; let i = index">
       <div *ngIf="time">
         <div class="row mt-2">
           <div class="col-sm-6 col-md-3">
-            <label for="source" class="label">Origem</label>
+            <label for="auto-source{{i}}" class="label">Origem</label>
             <input
               nbInput
               fullWidth
-              id="source"
+              id="auto-source{{i}}"
               placeholder="Origem"
               [value]="time.source"
               [disabled]="time.source === time.dest"
             />
           </div>
           <div class="col-sm-6 col-md-3">
-            <label for="dest" class="label">Destino</label>
+            <label for="auto-dest{{i}}" class="label">Destino</label>
             <input
               nbInput
               fullWidth
-              id="dest"
+              id="auto-dest{{i}}"
               placeholder="Destino"
               [value]="time.dest"
               [disabled]="time.source === time.dest"
@@ -127,11 +142,11 @@
             <span> = </span>
           </div>
           <div class="col-md-auto">
-            <label for="value" class="label">Valor (tempo)</label>
+            <label for="auto-value{{i}}" class="label">Valor (tempo)</label>
             <input
               nbInput
               fullWidth
-              id="value"
+              id="auto-value{{i}}"
               placeholder="Valor"
               [value]="time.value"
               [disabled]="time.source === time.dest"

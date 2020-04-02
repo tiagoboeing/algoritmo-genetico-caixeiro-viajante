@@ -242,33 +242,22 @@ class GeneticAlgorithm():
 
 
 def init(event, context):
+    body_cities = None
+    body_distances = None
+    population_size = 20
+    mutation_rate = 1  # 1% - taxa de mutação
+    generations = 1000  # critério de parada
+    time_distances = []
+
     if event:
         body = event['body-json']
-        population_size = body["populationSize"]
-        mutation_rate = body["mutationRate"]
-        generations = body["generations"]
+        population_size = int(body["populationSize"])
+        mutation_rate = int(body["mutationRate"])
+        generations = int(body["generations"])
         body_cities = body['cities']
         body_distances = body["distances"]
-    else:
-        body_cities = None
-        body_distances = None
-        population_size = 20
-        mutation_rate = 1  # 1% - taxa de mutação
-        generations = 1000  # critério de parada
 
     try:
-        time_distances = []
-        population_size = int(population_size)
-        mutation_rate = int(mutation_rate)
-        generations = int(generations)
-
-        print(json.dumps({
-            'populationSize': population_size,
-            'mutationRate': mutation_rate,
-            'generations': generations,
-            'timeDistances': time_distances
-        }))
-
         c = Cities()
         if body_cities and body_distances:
             c.set_cities(body_cities, body_distances)
@@ -309,12 +298,8 @@ def init(event, context):
             'statusCode': 500,
             'body': json.dumps({
                 'message': "Erro ao executar",
-                'populationSize': population_size,
-                'mutationRate': mutation_rate,
-                'generations': generations,
-                'distances': body_distances,
-                'cities': body_cities,
-                'payload': body
+                'payload': body,
+                'context': context
             })
         }
 

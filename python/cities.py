@@ -27,7 +27,7 @@ class Cities():
     def chromose_to_cities(self, chromosome):
         cities = []
         for i in range(len(chromosome)):
-            cities.append(self.get_city(i).name)
+            cities.append(self.get_city(chromosome[i]).name)
         return cities
 
     def get_city_distances(self, index):

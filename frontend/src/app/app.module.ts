@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
+import { HttpClientModule } from "@angular/common/http";
 import {
   NbLayoutModule,
   NbThemeModule,
@@ -9,12 +10,15 @@ import {
   NbCardModule,
   NbInputModule,
   NbButtonModule,
-  NbIconModule
+  NbIconModule,
+  NbToastrModule,
+  NbToastrService
 } from "@nebular/theme";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { Test1Component } from "./test1/test1.component";
-import { ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
+import { Test1Service } from "./test1/test1.service";
 
 @NgModule({
   declarations: [AppComponent, Test1Component],
@@ -22,6 +26,7 @@ import { ReactiveFormsModule } from "@angular/forms";
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     NbThemeModule.forRoot({ name: "dark" }),
     NbLayoutModule,
     NbTreeGridModule,
@@ -30,9 +35,11 @@ import { ReactiveFormsModule } from "@angular/forms";
     NbInputModule,
     NbIconModule,
     NbButtonModule,
+    NbToastrModule.forRoot(),
+    FormsModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [Test1Service],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

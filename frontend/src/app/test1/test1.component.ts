@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
-
-// tempo em minutos
+import { Test1Service } from "./test1.service";
+import { NbToastrService } from "@nebular/theme";
 
 @Component({
   selector: "app-test1",
@@ -10,12 +10,16 @@ import { debounceTime, distinctUntilChanged } from "rxjs/operators";
   styleUrls: ["./test1.component.scss"]
 })
 export class Test1Component implements OnInit {
-  times: { source: string; dest: string; value: number }[] = [];
-  manualTimes: { source: string; dest: string; value: number }[] = [];
+  times: Distances[] = [];
+  manualTimes: Distances[] = [];
   form: FormGroup;
   cities: FormArray;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private toastr: NbToastrService,
+    private service: Test1Service
+  ) {
     this.form = this.formBuilder.group({
       cities: this.formBuilder.array([this.createCity()])
     });
@@ -88,9 +92,44 @@ export class Test1Component implements OnInit {
           value: null
         });
       }
-      // if (this.cities && this.cities.length && index < this.cities.length - 1) {
-      //   console.log("Next: " + this.cities[index + 1].name);
-      // }
+      if (this.cities && this.cities.length && index < this.cities.length - 1) {
+        console.log("Next: " + this.cities[index + 1].name);
+      }
     });
   }
+
+  getSolution({ cities }: any) {
+    this.buildCities({ cities });
+
+    // add reverse distance to array
+    this.manualTimes.forEach(({ source, dest, value }) => {
+      this.manualTimes.push({
+        source: dest,
+        dest: source,
+        value
+      });
+    });
+
+    const citiesNames = cities.map(({ name }) => name);
+    this.service
+      .getSolution(citiesNames, this.manualTimes)
+      .toPromise()
+      .then(res => {
+        this.toastr.success("Caminho obtido com sucesso!");
+        console.log(res);
+      })
+      .catch(err => {
+        this.toastr.danger(
+          "O serviço respondeu com um erro, tente novamente!",
+          "Opsss..."
+        );
+        console.error(err);
+      });
+  }
+}
+
+export interface Distances {
+  source: string;
+  dest: string;
+  value: number;
 }

@@ -76,3 +76,25 @@ O cálculo do fitness (aptidão) foi realizado com base na soma das distâncias 
 Ex.: `[4, 2, 0, 1, 3]` = 91
 
 > [4, 2, 0, 1, 3] → [E, C, A, B, D]
+
+# API
+
+Definindo indíviduos:
+
+```json
+{
+    "populationSize": 20,
+    "mutationRate": 1,
+    "generations": 100,
+    "cities": [
+        "Cidade1", "Cidade2", "Cidade3", "Cidade4", "Cidade5"
+    ],
+    "distances": [ 
+        [0, 10, 15, 5, 12],
+        [10, 0, 70, 52, 27],
+        [15, 70, 0, 120, 14],
+        [5, 52, 120, 0, 38],
+        [12, 27, 14, 38, 0]
+    ]
+}
+```
