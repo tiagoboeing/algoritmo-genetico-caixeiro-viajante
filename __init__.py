@@ -1,4 +1,5 @@
-from builtins import filter
+import os
+from flask import Flask
 from random import random, randint
 
 from cities import Cities
@@ -144,6 +145,7 @@ class GeneticAlgorithm():
     """
     Soma distância percorrida por cada indivíduo da população
     """
+
     def sum_travelled_distance(self):
         sum = 0
         for individual in self.population:
@@ -155,6 +157,7 @@ class GeneticAlgorithm():
     As cidades com menores distâncias são as que possuem maior chances de ser sorteadas
     Distância e probabilidade são inversamente proporcionais (quanto menor a distância, maior a chance)
     """
+
     def select_parents(self, sum_travelled_distances):
         total_coefficient = 0
         parent = -1  # nenhum indivíduo sorteado
@@ -234,22 +237,36 @@ class GeneticAlgorithm():
         return self.best_solution.chromosome
 
 
-if __name__ == '__main__':
-    population_size = 20
-    mutation_rate = 1  # 1% - taxa de mutação
-    generations = 1000 # critério de parada
-    time_distances = []
+app = Flask(__name__)
 
-    c = Cities()
-    c.test()  # carrega cidades para testes
-    cities = c.get_cities()
 
-    for city in cities:
-        print("Distâncias da cidade: %s\n******" % city.name)
-        time_distances.append(city.distances)
-        print(city.distances)
-        for index, distance in enumerate(city.distances):
-            print("De %s --> %s = %s" % (city.name, cities[index].name, distance))
+@app.route('/')
+def index(self):
+    try:
+        population_size = 20
+        mutation_rate = 1  # 1% - taxa de mutação
+        generations = 1000  # critério de parada
+        time_distances = []
 
-    ga = GeneticAlgorithm(population_size)
-    result = ga.resolve(mutation_rate, generations, time_distances, cities)
+        c = Cities()
+        c.test()  # carrega cidades para testes
+        cities = c.get_cities()
+
+        for city in cities:
+            print("Distâncias da cidade: %s\n******" % city.name)
+            time_distances.append(city.distances)
+            print(city.distances)
+            for index, distance in enumerate(city.distances):
+                print("De %s --> %s = %s" % (city.name, cities[index].name, distance))
+
+        ga = GeneticAlgorithm(population_size)
+        result = ga.resolve(mutation_rate, generations, time_distances, cities)
+
+        return result
+    except:
+        return "Ocorreu um erro!"
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
