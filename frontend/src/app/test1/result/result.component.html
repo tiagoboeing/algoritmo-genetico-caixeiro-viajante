@@ -1,0 +1,31 @@
+<div class="row">
+  <div class="col">
+    <span class="row caption mb-4 pl-2">Cidades percorridas</span>
+    <nb-stepper orientation="horizontal" disableStepNavigation>
+      <nb-step [label]="city" *ngFor="let city of cities"> </nb-step>
+    </nb-stepper>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <table [nbTreeGrid]="data" equalColumnsWidth>
+      <tr nbTreeGridRow *nbTreeGridRowDef="let row; columns: allColumns"></tr>
+
+      <ng-container [nbTreeGridColumnDef]="customColumn">
+        <td nbTreeGridCell *nbTreeGridCellDef="let row">
+          {{ row.data.name }}
+        </td>
+      </ng-container>
+
+      <ng-container
+        *ngFor="let column of defaultColumns"
+        [nbTreeGridColumnDef]="column"
+      >
+        <td nbTreeGridCell *nbTreeGridCellDef="let row">
+          {{ row.data[column] }}
+        </td>
+      </ng-container>
+    </table>
+  </div>
+</div>

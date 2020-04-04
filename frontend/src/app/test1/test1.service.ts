@@ -1,13 +1,13 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map } from "rxjs/operators";
-import { Observable } from 'rxjs';
+import { Observable } from "rxjs";
 
 export const REST_URL =
   "https://57ngqizuyi.execute-api.us-east-1.amazonaws.com/default";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class Test1Service {
   constructor(private http: HttpClient) {}
@@ -20,13 +20,13 @@ export class Test1Service {
     populationSize?
   ): Observable<any> {
     return this.http
-      .post<{ statusCode: number; body: {} }>(`${REST_URL}`, {
+      .post<{ statusCode: number; body: string }>(`${REST_URL}`, {
         cities,
         distances,
         generations,
         mutationRate,
-        populationSize
+        populationSize,
       })
-      .pipe(map(({ body }) => body));
+      .pipe(map(({ body }) => JSON.parse(body)));
   }
 }

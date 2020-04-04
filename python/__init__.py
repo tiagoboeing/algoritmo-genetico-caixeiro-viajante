@@ -222,8 +222,8 @@ class GeneticAlgorithm():
             for individual in self.population:
                 individual.fitness()
                 # Uncomment do debug
-                # print("New population %s - Fitness %s" %
-                #       (individual.chromosome, individual.travelled_distance))
+                print("New population %s - Fitness %s" %
+                      (individual.chromosome, individual.travelled_distance))
 
             # ordena população para melhor solução estar na primeira posição
             self.sort_population()

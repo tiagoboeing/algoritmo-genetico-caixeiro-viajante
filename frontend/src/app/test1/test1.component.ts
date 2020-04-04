@@ -3,20 +3,30 @@ import {
   OnInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  OnDestroy
+  OnDestroy,
 } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { Test1Service } from "./test1.service";
-import { NbToastrService } from "@nebular/theme";
+import {
+  NbToastrService,
+  NbWindowService,
+  NbWindowState,
+} from "@nebular/theme";
+import { ResultComponent } from "./result/result.component";
 
 @Component({
   selector: "app-test1",
   templateUrl: "./test1.component.html",
   styleUrls: ["./test1.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Test1Component implements OnInit, OnDestroy {
+  public algorithmConfigs = {
+    populationSize: 20,
+    mutationRate: 1,
+    generations: 1000,
+  };
   times: Distances[] = [];
   manualTimes: Distances[] = [];
   form: FormGroup;
@@ -26,16 +36,17 @@ export class Test1Component implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private toastr: NbToastrService,
     private service: Test1Service,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private windowService: NbWindowService
   ) {
     this.form = this.formBuilder.group({
-      cities: this.formBuilder.array([this.createCity()])
+      cities: this.formBuilder.array([this.createCity()]),
     });
   }
 
   createCity(): FormGroup {
     return this.formBuilder.group({
-      name: ""
+      name: "",
     });
   }
 
@@ -58,13 +69,9 @@ export class Test1Component implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.form.valueChanges
       .pipe(distinctUntilChanged(), debounceTime(400))
-      .subscribe(group => this.buildCities(group));
+      .subscribe((group) => this.buildCities(group));
   }
 
-  /**
-   *
-   * @param param0 FormGroup
-   */
   buildCities({ cities }: any) {
     this.times = [];
     this.manualTimes = [];
@@ -79,13 +86,13 @@ export class Test1Component implements OnInit, OnDestroy {
             this.times.push({
               source: currentCity.name,
               dest: name,
-              value: 0
+              value: 0,
             });
           } else {
             this.manualTimes.push({
               source: name,
               dest: currentCity.name,
-              value: null
+              value: null,
             });
           }
         }
@@ -104,7 +111,7 @@ export class Test1Component implements OnInit, OnDestroy {
         this.times.push({
           source: lastCity,
           dest: currentCity,
-          value: null
+          value: null,
         });
       }
       if (this.cities && this.cities.length && index < this.cities.length - 1) {
@@ -114,7 +121,7 @@ export class Test1Component implements OnInit, OnDestroy {
   }
 
   isValidForm(): boolean {
-    return !!this.manualTimes.find(el => el.value);
+    return !!this.manualTimes.find((el) => el.value);
   }
 
   getSolution({ cities }: any) {
@@ -139,7 +146,7 @@ export class Test1Component implements OnInit, OnDestroy {
     const distances = citiesVector.concat(this.times);
 
     // walks the vector for create a matrix
-    cities.forEach(city => {
+    cities.forEach((city) => {
       let line = [];
 
       cities.forEach(({ name }, index) => {
@@ -157,14 +164,32 @@ export class Test1Component implements OnInit, OnDestroy {
     });
 
     const citiesNames: [] = cities.map(({ name }) => name);
+    const { populationSize, mutationRate, generations } = this.algorithmConfigs;
     this.service
-      .getSolution(citiesNames, allDistances)
+      .getSolution(
+        citiesNames,
+        allDistances,
+        generations,
+        mutationRate,
+        populationSize
+      )
       .toPromise()
-      .then(res => {
-        this.toastr.success("Caminho obtido com sucesso!");
-        console.log(res);
+      .then(({ generation, travelled_distance, chromosome, cities }) => {
+        this.toastr.success("Melhor solução obtida!", "Sucesso!");
+
+        this.windowService.open(ResultComponent, {
+          title: "Resultado obtido",
+          context: {
+            generation,
+            travelledDistance: travelled_distance,
+            chromosome,
+            cities,
+          },
+          closeOnEsc: true,
+          closeOnBackdropClick: true,
+        });
       })
-      .catch(err => {
+      .catch((err) => {
         this.toastr.danger(
           "O serviço respondeu com um erro, tente novamente!",
           "Opsss..."
@@ -174,7 +199,7 @@ export class Test1Component implements OnInit, OnDestroy {
   }
 
   searchDistance(from: string, to: string, distances: any[]): Distances {
-    return distances.find(el => el.source === from && el.dest === to);
+    return distances.find((el) => el.source === from && el.dest === to);
   }
 
   ngOnDestroy(): void {

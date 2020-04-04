@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "deploy": "ng build --prod --aot --base-href 'algoritmos-geneticos-caixeiro-viajante' && ngh",
+    "clean": "rm -rf dist/",
+    "deploy": "npm run clean && ng build --prod --aot --base-href 'algoritmos-geneticos-caixeiro-viajante' && ngh",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

@@ -12,34 +12,42 @@ import {
   NbLayoutModule,
   NbThemeModule,
   NbToastrModule,
-  NbTreeGridModule
+  NbTreeGridModule,
+  NbSidebarModule,
+  NbWindowModule,
+  NbStepperModule,
 } from "@nebular/theme";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { Test1Component } from "./test1/test1.component";
 import { Test1Service } from "./test1/test1.service";
 import { CommonModule } from "@angular/common";
+import { ResultComponent } from "./test1/result/result.component";
 
 @NgModule({
-  declarations: [AppComponent, Test1Component],
+  declarations: [AppComponent, Test1Component, ResultComponent],
   imports: [
-    BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    BrowserModule,
+    FormsModule,
     HttpClientModule,
-    NbThemeModule.forRoot({ name: "dark" }),
-    NbLayoutModule,
-    NbTreeGridModule,
-    NbEvaIconsModule,
+    NbButtonModule,
     NbCardModule,
+    NbEvaIconsModule,
     NbIconModule,
     NbInputModule,
-    NbButtonModule,
+    NbLayoutModule,
+    NbSidebarModule.forRoot(),
+    NbStepperModule,
+    NbThemeModule.forRoot({ name: "dark" }),
     NbToastrModule.forRoot(),
-    FormsModule,
-    ReactiveFormsModule
+    NbTreeGridModule,
+    NbTreeGridModule,
+    NbWindowModule.forRoot(),
+    ReactiveFormsModule,
   ],
   providers: [Test1Service],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

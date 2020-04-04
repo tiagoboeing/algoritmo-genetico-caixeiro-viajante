@@ -1,159 +1,208 @@
-<button
-  nbButton
-  fullWidth
-  status="primary"
-  class="mb-4"
-  [disabled]="form.value.cities.length <= 1"
-  (click)="getSolution(form.value)"
->
-  Encontrar solução
-</button>
+<div class="row">
+  <div class="col-sm-12 col-md-3">
+    <nb-card>
+      <nb-card-header>
+        Configure o algoritmo
+      </nb-card-header>
+      <nb-card-body>
+        <div class="col-md-auto">
+          <label for="population" class="label">Tamanho da população</label>
+          <input
+            type="number"
+            nbInput
+            fullWidth
+            id="population"
+            placeholder="Valor"
+            [(ngModel)]="algorithmConfigs.populationSize"
+          />
+          <span class="caption">Padrão: 20 indivíduos</span>
+        </div>
 
-<nb-card>
-  <nb-card-header>
-    Cadastre as cidades
-    <span *ngIf="cities && cities.length > 0" class="mr-3"
-      >({{ cities.length }} cities)</span
+        <div class="col-md-auto mt-4">
+          <label for="mutation" class="label">Taxa de mutação</label>
+          <input
+            type="number"
+            nbInput
+            fullWidth
+            min="0"
+            max="100"
+            id="mutation"
+            placeholder="Valor"
+            [(ngModel)]="algorithmConfigs.mutationRate"
+          />
+          <span class="caption">Padrão: 1%</span>
+        </div>
+
+        <div class="col-md-auto mt-4">
+          <label for="generations" class="label">Gerações</label>
+          <input
+            type="number"
+            nbInput
+            fullWidth
+            id="generations"
+            placeholder="Valor"
+            [(ngModel)]="algorithmConfigs.generations"
+          />
+          <span class="caption">Padrão: 1000</span>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+  <div class="col-sm-12 col-md-9">
+    <button
+      nbButton
+      fullWidth
+      status="primary"
+      class="mb-4"
+      [disabled]="form.value.cities.length <= 1"
+      (click)="getSolution(form.value)"
     >
-
-    <button nbButton status="secondary" class="float-right" (click)="addCity()">
-      Adicionar cidade
+      Encontrar solução
     </button>
-  </nb-card-header>
-  <nb-card-body>
-    <div [formGroup]="form">
-      <div
-        class="row mt-2"
-        formArrayName="cities"
-        *ngFor="let item of form.get('cities')?.controls; let i = index"
-      >
-        <div class="col col-11">
-          <div [formGroupName]="i">
-            <input
-              nbInput
-              fullWidth
-              formControlName="name"
-              placeholder="Nome da cidade"
-            />
-          </div>
-        </div>
-        <div class="col">
-          <button nbButton ghost status="danger" (click)="removeCity(i)">
-            <nb-icon icon="minus-circle-outline"></nb-icon>
-          </button>
-        </div>
-      </div>
-    </div>
-  </nb-card-body>
-</nb-card>
 
-<!-- TODO: use ng-template for not replicate code blocks -->
-<nb-card>
-  <nb-card-header>
-    Informe o tempo entre as cidades
-  </nb-card-header>
+    <nb-card>
+      <nb-card-header>
+        Cadastre as cidades
+        <span *ngIf="cities && cities.length > 0" class="mr-3"
+          >({{ cities.length }} cidades)</span
+        >
 
-  <nb-card-body>
-    <div *ngFor="let time of manualTimes; let i = index">
-      <div *ngIf="time">
-        <div class="row mt-2">
-          <div class="col-sm-6 col-md-3">
-            <label for="source{{i}}" class="label">Origem</label>
-            <input
-              nbInput
-              fullWidth
-              id="source{{i}}"
-              placeholder="Origem"
-              [value]="time.source"
-              disabled
-            />
-          </div>
-          <div class="col-sm-6 col-md-3">
-            <label for="dest{{i}}" class="label">Destino</label>
-            <input
-              nbInput
-              fullWidth
-              id="dest{{i}}"
-              placeholder="Destino"
-              [value]="time.dest"
-              disabled
-            />
-          </div>
+        <button
+          nbButton
+          status="secondary"
+          class="float-right"
+          (click)="addCity()"
+        >
+          Adicionar cidade
+        </button>
+      </nb-card-header>
+      <nb-card-body>
+        <div [formGroup]="form">
           <div
-            class="col-auto"
-            style="align-items: center; display: flex; padding-top: 20px;"
+            class="row mt-2"
+            formArrayName="cities"
+            *ngFor="let item of form.get('cities')?.controls; let i = index"
           >
-            <span> = </span>
-          </div>
-          <div class="col-md-auto">
-            <label for="value{{i}}" class="label">Valor (tempo)</label>
-            <input
-              type="number"
-              nbInput
-              fullWidth
-              id="value{{i}}"
-              placeholder="Valor"
-              [value]="time.value"
-              [(ngModel)]="time.value"
-              [disabled]="time.source === time.dest"
-            />
+            <div class="col">
+              <div [formGroupName]="i">
+                <input
+                  nbInput
+                  fullWidth
+                  formControlName="name"
+                  placeholder="Nome da cidade"
+                />
+              </div>
+            </div>
+            <div style="width: 30px; margin: 0 20px 0 0;">
+              <button nbButton ghost status="danger" (click)="removeCity(i)">
+                <nb-icon icon="minus-circle-outline"></nb-icon>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </nb-card-body>
-</nb-card>
+      </nb-card-body>
+    </nb-card>
 
-<nb-card>
-  <nb-card-header>
-    Preenchidas automaticamente
-  </nb-card-header>
+    <!-- TODO: use ng-template for not replicate code blocks -->
+    <nb-card>
+      <nb-card-header>
+        Informe o tempo entre as cidades
+      </nb-card-header>
 
-  <nb-card-body>
-    <div *ngFor="let time of times; let i = index">
-      <div *ngIf="time">
-        <div class="row mt-2">
-          <div class="col-sm-6 col-md-3">
-            <label for="auto-source{{i}}" class="label">Origem</label>
-            <input
-              nbInput
-              fullWidth
-              id="auto-source{{i}}"
-              placeholder="Origem"
-              [value]="time.source"
-              [disabled]="time.source === time.dest"
-            />
-          </div>
-          <div class="col-sm-6 col-md-3">
-            <label for="auto-dest{{i}}" class="label">Destino</label>
-            <input
-              nbInput
-              fullWidth
-              id="auto-dest{{i}}"
-              placeholder="Destino"
-              [value]="time.dest"
-              [disabled]="time.source === time.dest"
-            />
-          </div>
-          <div
-            class="col-auto"
-            style="align-items: center; display: flex; padding-top: 20px;"
-          >
-            <span> = </span>
-          </div>
-          <div class="col-md-auto">
-            <label for="auto-value{{i}}" class="label">Valor (tempo)</label>
-            <input
-              nbInput
-              fullWidth
-              id="auto-value{{i}}"
-              placeholder="Valor"
-              [value]="time.value"
-              [disabled]="time.source === time.dest"
-            />
+      <nb-card-body>
+        <div *ngFor="let time of manualTimes; let i = index">
+          <div *ngIf="time">
+            <div class="row mt-2">
+              <div class="col-sm-4 col-md-4">
+                <label for="source{{ i }}" class="label">Origem</label>
+                <input
+                  nbInput
+                  fullWidth
+                  id="source{{ i }}"
+                  placeholder="Origem"
+                  [value]="time.source"
+                  disabled
+                />
+              </div>
+              <div class="col-sm-4 col-md-4">
+                <label for="dest{{ i }}" class="label">Destino</label>
+                <input
+                  nbInput
+                  fullWidth
+                  id="dest{{ i }}"
+                  placeholder="Destino"
+                  [value]="time.dest"
+                  disabled
+                />
+              </div>
+              <div class="col-md-4">
+                <label for="value{{ i }}" class="label">Valor (tempo)</label>
+                <input
+                  type="number"
+                  nbInput
+                  fullWidth
+                  id="value{{ i }}"
+                  placeholder="Valor"
+                  [value]="time.value"
+                  [(ngModel)]="time.value"
+                  [disabled]="time.source === time.dest"
+                />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </nb-card-body>
-</nb-card>
+      </nb-card-body>
+    </nb-card>
+
+    <nb-card>
+      <nb-card-header>
+        Preenchidas automaticamente
+      </nb-card-header>
+
+      <nb-card-body>
+        <div *ngFor="let time of times; let i = index">
+          <div *ngIf="time">
+            <div class="row mt-2">
+              <div class="col-sm-4 col-md-4">
+                <label for="auto-source{{ i }}" class="label">Origem</label>
+                <input
+                  nbInput
+                  fullWidth
+                  id="auto-source{{ i }}"
+                  placeholder="Origem"
+                  [value]="time.source"
+                  [disabled]="time.source === time.dest"
+                />
+              </div>
+              <div class="col-sm-4 col-md-4">
+                <label for="auto-dest{{ i }}" class="label">Destino</label>
+                <input
+                  nbInput
+                  fullWidth
+                  id="auto-dest{{ i }}"
+                  placeholder="Destino"
+                  [value]="time.dest"
+                  [disabled]="time.source === time.dest"
+                />
+              </div>
+              <div class="col-sm-4 col-md-4">
+                <label for="auto-value{{ i }}" class="label"
+                  >Valor (tempo)</label
+                >
+                <input
+                  nbInput
+                  fullWidth
+                  id="auto-value{{ i }}"
+                  placeholder="Valor"
+                  [value]="time.value"
+                  [disabled]="time.source === time.dest"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
