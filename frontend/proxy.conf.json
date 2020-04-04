@@ -1,6 +1,0 @@
-{
-  "itens": {
-      "target": "https://57ngqizuyi.execute-api.us-east-1.amazonaws.com/default",
-      "secure": true
-  }
-}
