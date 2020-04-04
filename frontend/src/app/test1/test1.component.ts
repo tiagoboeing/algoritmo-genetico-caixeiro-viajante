@@ -126,10 +126,12 @@ export class Test1Component implements OnInit, OnDestroy {
     this.cdr.detectChanges();
 
     if (!this.isValidForm()) {
+      this.loading = false;
       this.toastr.warning(
         "Necessário preencher as distâncias!",
         "Campos obrigatórios!"
       );
+      this.cdr.detectChanges();
       throw Error("Distâncias não informadas.");
     }
 
