@@ -23,6 +23,30 @@ O número de gerações é o critério de parada.
 | --------- | ------------- |
 | Padrão    | 20 indivíduos |
 
+## Representação dos indivíduos
+
+Cada cidade foi representada pela sua posição no vetor.
+
+Para as cidades: `"A", "B", "C", "D", "E"` teremos um vetor com 5 elementos.
+
+```js
+["A", "B", "C", "D", "E"]
+[ 0,   1,   2,   3,   4 ]
+```
+
+## Representação das distâncias
+
+As distâncias são posicionadas de acordo com a posição do array de cada cidade.
+
+```js
+ A   B  C   D   E
+[0, 10, 15, 5, 12], // cidade A
+[10, 0, 70, 52, 27], // cidade B
+[15, 70, 0, 120, 14], // cidade C
+[5, 52, 120, 0, 38], // cidade D
+[12, 27, 14, 38, 0] // Cidade E
+```
+
 ## Seleção dos indivíduos
 
 A escolha dos pais de uma população para crossover se deu através do método da **roleta viciada**.
@@ -71,7 +95,7 @@ while i < len(self.population) and sum < sortedValue:
 
 ## Aptidão dos indivíduos (fitness)   
 
-O cálculo do fitness (aptidão) foi realizado com base na soma das distâncias de um indivíduo da população/cromossomo.
+O cálculo do fitness (aptidão) foi realizado com base na soma das distâncias de um indivíduo da população/cromossomo. Na sequência a população é ordenada de forma com que os cromossomos com menor distância fiquem nas primeiras posições do vetor para facilitar a identificação da melhor solução de cada geração. (No caso de seleção com base em torneio esta técnica facilitaria a seleção dos melhores X elementos).
 
 Ex.: `[4, 2, 0, 1, 3]` = 91
 
@@ -79,15 +103,21 @@ Ex.: `[4, 2, 0, 1, 3]` = 91
 
 # API
 
+API em Python disponibilizada publicamente na AWS Lambda.
+
 Definindo indíviduos:
+
+- Tipo: `POST`
+- Endpoint: `https://57ngqizuyi.execute-api.us-east-1.amazonaws.com/default`
+
 
 ```json
 {
     "populationSize": 20,
     "mutationRate": 1,
-    "generations": 100,
+    "generations": 1000,
     "cities": [
-        "Cidade1", "Cidade2", "Cidade3", "Cidade4", "Cidade5"
+        "A", "B", "C", "D", "E"
     ],
     "distances": [ 
         [0, 10, 15, 5, 12],
@@ -96,5 +126,14 @@ Definindo indíviduos:
         [5, 52, 120, 0, 38],
         [12, 27, 14, 38, 0]
     ]
+}
+```
+
+A resposta será:
+
+```json
+{
+    "statusCode": 200,
+    "body": "{\"generation\": 4, \"travelled_distance\": 113, \"chromosome\": [4, 1, 3, 0, 2], \"cities\": [\"E\", \"B\", \"D\", \"A\", \"C\"]}"
 }
 ```
