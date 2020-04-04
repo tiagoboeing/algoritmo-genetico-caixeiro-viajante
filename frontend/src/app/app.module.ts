@@ -16,6 +16,7 @@ import {
   NbToastrModule,
   NbTreeGridModule,
   NbWindowModule,
+  NbSpinnerModule,
 } from "@nebular/theme";
 import { IConfig, NgxMaskModule } from "ngx-mask";
 import { AppRoutingModule } from "./app-routing.module";
@@ -41,6 +42,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     NbInputModule,
     NbLayoutModule,
     NgxMaskModule.forRoot(options),
+    NbSpinnerModule,
     NbSidebarModule.forRoot(),
     NbStepperModule,
     NbThemeModule.forRoot({ name: "dark" }),

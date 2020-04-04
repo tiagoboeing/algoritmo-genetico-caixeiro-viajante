@@ -27,6 +27,7 @@ export class Test1Component implements OnInit, OnDestroy {
   manualTimes: Distances[] = [];
   form: FormGroup;
   cities: FormArray;
+  loading = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -121,7 +122,9 @@ export class Test1Component implements OnInit, OnDestroy {
   }
 
   getSolution({ cities }: any) {
+    this.loading = true;
     this.cdr.detectChanges();
+
     if (!this.isValidForm()) {
       this.toastr.warning(
         "Necessário preencher as distâncias!",
@@ -175,6 +178,8 @@ export class Test1Component implements OnInit, OnDestroy {
       )
       .toPromise()
       .then(({ generation, travelled_distance, chromosome, cities }) => {
+        this.loading = false;
+        this.cdr.detectChanges();
         this.toastr.success("Melhor solução obtida!", "Sucesso!");
 
         this.windowService.open(ResultComponent, {
@@ -190,6 +195,8 @@ export class Test1Component implements OnInit, OnDestroy {
         });
       })
       .catch((err) => {
+        this.loading = false;
+        this.cdr.detectChanges();
         this.toastr.danger(
           "O serviço respondeu com um erro, tente novamente!",
           "Opsss..."

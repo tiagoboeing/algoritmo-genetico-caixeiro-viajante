@@ -60,6 +60,8 @@
       class="mb-4"
       [disabled]="form.value.cities.length <= 1"
       (click)="getSolution(form.value)"
+      [disabled]="loading"
+      [nbSpinner]="loading"
     >
       Encontrar solução
     </button>
