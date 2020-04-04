@@ -23,6 +23,7 @@ class Cities():
             City("D", [5, 52, 120, 0, 38]),
             City("E", [12, 27, 14, 38, 0])
         ]
+        return self.cities
 
     def chromose_to_cities(self, chromosome):
         cities = []
@@ -40,6 +41,7 @@ class Cities():
         return self.cities[index]
 
     def set_cities(self, cities=[], distances=[[]]):
+        self.cities = []
         for i in range(len(cities)):
             self.cities.append(City(cities[i], distances[i]))
 

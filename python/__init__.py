@@ -34,12 +34,16 @@ class Individuals():
         current_city = self.chromosome[0]  # cidade de partida do cromossomo
 
         for i in range(len(self.chromosome)):
-            dest_city = self.chromosome[i]  # cidade atual no grafo
             d = Distance(self.cities)
+            dest_city = self.chromosome[i]  # cidade atual no grafo
             distance = d.get_distance(current_city, dest_city)
             sum_distance += distance
             self.visited_cities.append(dest_city)  # adiciona cromossomo como cidade visitada
             current_city = dest_city
+
+            # soma distância da última cidade para a primeira - caminho de volta
+            if i == len(self.chromosome) - 1:
+                sum_distance += d.get_distance(self.chromosome[len(self.chromosome) - 1], self.chromosome[0])
 
         self.travelled_distance = sum_distance
 
@@ -241,7 +245,7 @@ class GeneticAlgorithm():
         ]
 
 
-def init(event, context):
+def handler(event, context):
     body_cities = None
     body_distances = None
     population_size = 20
@@ -250,12 +254,11 @@ def init(event, context):
     time_distances = []
 
     if event:
-        body = event['body-json']
-        population_size = int(body["populationSize"])
-        mutation_rate = int(body["mutationRate"])
-        generations = int(body["generations"])
-        body_cities = body['cities']
-        body_distances = body["distances"]
+        population_size = int(event["populationSize"])
+        mutation_rate = int(event["mutationRate"])
+        generations = int(event["generations"])
+        body_cities = event['cities']
+        body_distances = event["distances"]
 
     try:
         c = Cities()
@@ -293,16 +296,15 @@ def init(event, context):
             })
         }
 
-    except:
+    except ImportError:
+        print(ImportError)
         return {
             'statusCode': 500,
             'body': json.dumps({
-                'message': "Erro ao executar",
-                'payload': body,
-                'context': context
+                'message': "Erro ao executar"
             })
         }
 
 
 if __name__ == "__main__":
-    init(None, None)
+    handler(None, None)

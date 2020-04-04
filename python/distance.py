@@ -1,8 +1,5 @@
-from cities import Cities
-
-
 class Distance:
-    def __init__(self, cities: Cities):
+    def __init__(self, cities):
         self.cities = cities
 
     def get_distance(self, fromCity: int, toCity: int):
