@@ -10,19 +10,21 @@ import {
   NbIconModule,
   NbInputModule,
   NbLayoutModule,
+  NbSidebarModule,
+  NbStepperModule,
   NbThemeModule,
   NbToastrModule,
   NbTreeGridModule,
-  NbSidebarModule,
   NbWindowModule,
-  NbStepperModule,
 } from "@nebular/theme";
+import { IConfig, NgxMaskModule } from "ngx-mask";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { ResultComponent } from "./test1/result/result.component";
 import { Test1Component } from "./test1/test1.component";
 import { Test1Service } from "./test1/test1.service";
-import { CommonModule } from "@angular/common";
-import { ResultComponent } from "./test1/result/result.component";
+
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
 
 @NgModule({
   declarations: [AppComponent, Test1Component, ResultComponent],
@@ -38,6 +40,7 @@ import { ResultComponent } from "./test1/result/result.component";
     NbIconModule,
     NbInputModule,
     NbLayoutModule,
+    NgxMaskModule.forRoot(options),
     NbSidebarModule.forRoot(),
     NbStepperModule,
     NbThemeModule.forRoot({ name: "dark" }),

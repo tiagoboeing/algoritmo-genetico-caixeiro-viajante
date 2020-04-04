@@ -1,19 +1,15 @@
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  Component,
   OnDestroy,
+  OnInit,
 } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
+import { NbToastrService, NbWindowService } from "@nebular/theme";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
-import { Test1Service } from "./test1.service";
-import {
-  NbToastrService,
-  NbWindowService,
-  NbWindowState,
-} from "@nebular/theme";
 import { ResultComponent } from "./result/result.component";
+import { Test1Service } from "./test1.service";
 
 @Component({
   selector: "app-test1",
@@ -139,7 +135,11 @@ export class Test1Component implements OnInit, OnDestroy {
     // A -> B and B -> A are same values
     const citiesReverse = [];
     this.manualTimes.map(({ source, dest, value }) => {
-      citiesReverse.push({ source: dest, dest: source, value });
+      citiesReverse.push({
+        source: dest,
+        dest: source,
+        value: parseFloat(value),
+      });
     });
     const citiesVector = this.manualTimes.concat(citiesReverse);
 
@@ -149,14 +149,14 @@ export class Test1Component implements OnInit, OnDestroy {
     cities.forEach((city) => {
       let line = [];
 
-      cities.forEach(({ name }, index) => {
+      cities.forEach(({ name }) => {
         if (city.name === name) {
           line.push(0);
         } else {
           const distance = this.searchDistance(city.name, name, distances);
           if (!distance || !distance.value)
             throw Error("Elemento não localizado no array de distâncias");
-          line.push(distance.value);
+          line.push(parseFloat(distance.value));
         }
       });
 
@@ -210,5 +210,5 @@ export class Test1Component implements OnInit, OnDestroy {
 export interface Distances {
   source: string;
   dest: string;
-  value: number;
+  value: any;
 }

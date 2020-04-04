@@ -34,7 +34,7 @@ export class ResultComponent implements OnInit {
       },
       {
         data: {
-          name: "Cromosomo",
+          name: "Cromosomos",
           value: this.chromosome,
         },
       },

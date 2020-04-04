@@ -8,7 +8,8 @@
         <div class="col-md-auto">
           <label for="population" class="label">Tamanho da população</label>
           <input
-            type="number"
+            mask="separator.0"
+            thousandSeparator="."
             nbInput
             fullWidth
             id="population"
@@ -21,12 +22,13 @@
         <div class="col-md-auto mt-4">
           <label for="mutation" class="label">Taxa de mutação</label>
           <input
-            type="number"
             nbInput
             fullWidth
             min="0"
             max="100"
             id="mutation"
+            mask="percent"
+            suffix="%"
             placeholder="Valor"
             [(ngModel)]="algorithmConfigs.mutationRate"
           />
@@ -36,9 +38,10 @@
         <div class="col-md-auto mt-4">
           <label for="generations" class="label">Gerações</label>
           <input
-            type="number"
             nbInput
             fullWidth
+            mask="separator.0"
+            thousandSeparator="."
             id="generations"
             placeholder="Valor"
             [(ngModel)]="algorithmConfigs.generations"
@@ -139,10 +142,10 @@
               <div class="col-md-4">
                 <label for="value{{ i }}" class="label">Valor (tempo)</label>
                 <input
-                  type="number"
                   nbInput
                   fullWidth
                   id="value{{ i }}"
+                  mask="separator.10"
                   placeholder="Valor"
                   [value]="time.value"
                   [(ngModel)]="time.value"
