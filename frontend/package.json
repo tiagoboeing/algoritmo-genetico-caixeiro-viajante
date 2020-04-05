@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --aot",
     "clean": "rm -rf dist/",
     "deploy": "npm run clean && ng deploy --cname=caixeiro-viajante.tiagoboeing.com",
     "lint": "ng lint",
