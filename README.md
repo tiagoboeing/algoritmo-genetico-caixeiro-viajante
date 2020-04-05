@@ -5,6 +5,8 @@
 - API: Python
 - Frontend: Angular 8
 
+![](screenshots/demo.png)
+
 ## Critério de parada
 
 O número de gerações é o critério de parada.
