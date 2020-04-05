@@ -22,12 +22,12 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # Runs a single command using the runners shell
-    - name: GitHub Pages
-      uses: crazy-max/ghaction-github-pages@v1.3.0
+    - name: Angular Deploy gh-pages Actions
+      uses: AhsanAyaz/angular-deploy-gh-pages-actions@v1.1.0
       with:
-        build_dir: frontend/dist
-        # Commit message
-        commit_message: Deployed by Actions # optional
-        # Write the given domain name to the CNAME file
-        fqdn: caixeiro-viajante.tiagoboeing.com # optional
+        # Github access token token used to deploy on gh_pages. You can find it on Github.
+        github_access_token: ${{ secrets.workflow }}
+        # The directory of the angular project, in which all the commands will run
+        angular_project_dir: frontend
+        # The folder in which `ng build` provides its output. This is the folder which will be deployed to the `deploy_branch`.
+        build_folder: frontend/dist
