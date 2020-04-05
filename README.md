@@ -2,7 +2,7 @@
 
 > [Demonstração](https://caixeiro-viajante.tiagoboeing.com/)
 
-- API: Python
+- [Script em Python](#api) (disponilizado na AWS Lambda)
 - Frontend: Angular 9
 
 ![](screenshots/demo.png)
