@@ -1,6 +1,6 @@
 # Algoritmos Genéticos - Problema do Caixeiro Viajante
 
-> [Demonstração](https://tiagoboeing/algoritmos-geneticos-caixeiro-viajante)
+> [Demonstração](https://caixeiro-viajante.tiagoboeing.com/)
 
 - API: Python
 - Frontend: Angular 9
