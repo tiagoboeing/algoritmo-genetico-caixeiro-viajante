@@ -109,13 +109,11 @@ Ex.: `[4, 2, 0, 1, 3]` = 91
 
 > [4, 2, 0, 1, 3] → [E, C, A, B, D]
 
-# Arquitetura
+## Arquitetura
 
-## API
+### API
 
 API em Python disponibilizada publicamente na AWS Lambda.
-
-Definindo indíviduos:
 
 | Atributo | Valor                                                            |
 | -------- | ---------------------------------------------------------------- |
@@ -124,7 +122,17 @@ Definindo indíviduos:
 | CORS     | `'*'`                                                            |
 | Limite   | 10.000 solicitações por dia                                      |
 
-### Payload
+#### Payload
+
+| Atributo         | Obrigatório | Padrão              |
+| ---------------- | ----------- | ------------------- |
+| `populationSize` | Não         | 20                  |
+| `mutationRate`   | Não         | 1                   |
+| `generations`    | Não         | 1000                |
+| `cities`         | Não         | Cidades de teste    |
+| `distances`      | Não         | Distâncias de teste |
+
+Definindo indivíduos e e distâncias.
 
 ```json
 {
@@ -144,7 +152,7 @@ Definindo indíviduos:
 }
 ```
 
-### Response
+#### Response
 
 ```json
 {
