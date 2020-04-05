@@ -40,15 +40,15 @@ Para as cidades: `"A", "B", "C", "D", "E"` teremos um vetor com 5 elementos.
 
 ## Representação das distâncias
 
-As distâncias são posicionadas de acordo com a posição do array de cada cidade.
+As distâncias são posicionadas de acordo com o índice do array de cada cidade.
 
 ```js
- A   B  C   D   E
-[0, 10, 15, 5, 12], // cidade A
-[10, 0, 70, 52, 27], // cidade B
-[15, 70, 0, 120, 14], // cidade C
-[5, 52, 120, 0, 38], // cidade D
-[12, 27, 14, 38, 0] // Cidade E
+   A   B  C   D   E
+A [0, 10, 15, 5, 12], // cidade A
+B [10, 0, 70, 52, 27], // cidade B
+C [15, 70, 0, 120, 14], // cidade C
+D [5, 52, 120, 0, 38], // cidade D
+E [12, 27, 14, 38, 0] // Cidade E
 ```
 
 ## Seleção dos indivíduos
