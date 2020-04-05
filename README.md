@@ -1,4 +1,4 @@
-# Algoritmos Genéticos - Problema do Caixeiro Viajante
+# Algoritmos Genéticos - Problema do caixeiro-viajante
 
 > [Demonstração](https://caixeiro-viajante.tiagoboeing.com/)
 
