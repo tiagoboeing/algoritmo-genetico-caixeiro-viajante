@@ -3,7 +3,7 @@
 > [Demonstração](https://tiagoboeing/algoritmos-geneticos-caixeiro-viajante)
 
 - API: Python
-- Frontend: Angular 8
+- Frontend: Angular 9
 
 ![](screenshots/demo.png)
 
