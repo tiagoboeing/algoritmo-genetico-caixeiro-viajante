@@ -19,14 +19,12 @@ export class Test1Service {
     mutationRate?,
     populationSize?
   ): Observable<any> {
-    return this.http
-      .post<{ statusCode: number; body: string }>(`${REST_URL}`, {
-        cities,
-        distances,
-        generations,
-        mutationRate,
-        populationSize,
-      })
-      .pipe(map(({ body }) => JSON.parse(body)));
+    return this.http.post<{ statusCode: number; body: string }>(`${REST_URL}`, {
+      cities,
+      distances,
+      generations,
+      mutationRate,
+      populationSize,
+    });
   }
 }
