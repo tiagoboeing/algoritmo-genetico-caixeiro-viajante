@@ -245,16 +245,21 @@ class GeneticAlgorithm():
         ]
 
 
+def parseJson(event, key):
+    return json.loads(json.dumps(event[key]))
+
+
 def handler(event, context):
     body_cities = None
     body_distances = None
-    population_size = 20
+    population_size = 2
     mutation_rate = 1  # 1% - taxa de mutação
-    generations = 1000  # critério de parada
+    generations = 10  # critério de parada
     time_distances = []
 
     if event:
-        population_size = int(event["populationSize"])
+        event = json.loads(event['body'])
+        population_size = int(event['populationSize'])
         mutation_rate = int(event["mutationRate"])
         generations = int(event["generations"])
         body_cities = event['cities']
@@ -288,6 +293,10 @@ def handler(event, context):
 
         return {
             'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
             'body': json.dumps({
                 'generation': result[0],
                 'travelled_distance': result[1],
