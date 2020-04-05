@@ -109,17 +109,22 @@ Ex.: `[4, 2, 0, 1, 3]` = 91
 
 > [4, 2, 0, 1, 3] → [E, C, A, B, D]
 
-# API
+# Arquitetura
+
+## API
 
 API em Python disponibilizada publicamente na AWS Lambda.
 
 Definindo indíviduos:
 
-- Tipo: `POST`
-- Endpoint: `https://57ngqizuyi.execute-api.us-east-1.amazonaws.com/default`
-- CORS ativado e liberado (`'*'`)
-- Limite diário: 10.000 solicitações
+| Atributo | Valor                                                            |
+| -------- | ---------------------------------------------------------------- |
+| Tipo     | `POST`                                                           |
+| URL      | `https://57ngqizuyi.execute-api.us-east-1.amazonaws.com/default` |
+| CORS     | `'*'`                                                            |
+| Limite   | 10.000 solicitações por dia                                      |
 
+### Payload
 
 ```json
 {
@@ -139,7 +144,7 @@ Definindo indíviduos:
 }
 ```
 
-A resposta será:
+### Response
 
 ```json
 {
