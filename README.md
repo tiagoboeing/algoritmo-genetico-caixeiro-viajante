@@ -7,6 +7,10 @@
 
 ![](screenshots/demo.png)
 
+Embora o frontend limite a quantidade de cidades, a API não possui limite de cidades, apenas um timeout configurado, sendo assim desde que a resolução não exceda este tempo não haverá problemas.
+
+As distâncias podem ser representadas por valores inteiros ou decimais.
+
 ## Critério de parada
 
 O número de gerações é o critério de parada.
@@ -113,6 +117,8 @@ Definindo indíviduos:
 
 - Tipo: `POST`
 - Endpoint: `https://57ngqizuyi.execute-api.us-east-1.amazonaws.com/default`
+- CORS ativado e liberado (`'*'`)
+- Limite diário: 10.000 solicitações
 
 
 ```json
@@ -137,7 +143,20 @@ A resposta será:
 
 ```json
 {
-    "statusCode": 200,
-    "body": "{\"generation\": 4, \"travelled_distance\": 113, \"chromosome\": [4, 1, 3, 0, 2], \"cities\": [\"E\", \"B\", \"D\", \"A\", \"C\"]}"
+    "generation": 0,
+    "travelled_distance": 113,
+    "chromosome": [
+        4,
+        1,
+        3,
+        0,
+        2
+    ],
+    "cities": [
+        "E",
+        "B",
+        "D",
+        "A",
+        "C"
+    ]
 }
-```
