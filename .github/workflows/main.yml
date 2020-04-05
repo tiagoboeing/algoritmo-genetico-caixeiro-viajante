@@ -26,6 +26,7 @@ jobs:
     - name: GitHub Pages
       uses: crazy-max/ghaction-github-pages@v1.3.0
       with:
+        build_dir: frontend/dist
         # Commit message
         commit_message: Deployed by Actions # optional
         # Write the given domain name to the CNAME file
