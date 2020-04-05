@@ -252,9 +252,9 @@ def parseJson(event, key):
 def handler(event, context):
     body_cities = None
     body_distances = None
-    population_size = 2
+    population_size = 20
     mutation_rate = 1  # 1% - taxa de mutação
-    generations = 10  # critério de parada
+    generations = 1000  # critério de parada
     time_distances = []
 
     if event:
