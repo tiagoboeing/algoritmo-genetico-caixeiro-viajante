@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "clean": "rm -rf dist/",
-    "deploy": "npm run clean && ng deploy --aot --cname=caixeiro-viajante.tiagoboeing.com",
+    "deploy": "npm run clean && ng deploy --cname=caixeiro-viajante.tiagoboeing.com",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
