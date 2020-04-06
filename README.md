@@ -1,5 +1,7 @@
 # Algoritmos Genéticos - Problema do caixeiro-viajante
 
+![CI](https://github.com/tiagoboeing/algoritmos-geneticos-caixeiro-viajante/workflows/CI/badge.svg)
+
 > [Demonstração](https://caixeiro-viajante.tiagoboeing.com/)
 
 - [Script em Python](#api) (disponilizado na AWS Lambda)
