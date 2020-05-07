@@ -4,7 +4,7 @@
 
 > [Demonstração](https://caixeiro-viajante.tiagoboeing.com/)
 
-- [Script em Python](#api) (disponilizado na AWS Lambda)
+- [Script em Python](#api) (AWS Lambda - [us-east-1])
 - Frontend: Angular 9
 
 ![](screenshots/demo.png)
