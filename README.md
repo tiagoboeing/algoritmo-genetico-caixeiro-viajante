@@ -122,7 +122,8 @@ API em Python disponibilizada publicamente na AWS Lambda.
 | Tipo     | `POST`                                                           |
 | URL      | `https://57ngqizuyi.execute-api.us-east-1.amazonaws.com/default` |
 | CORS     | `'*'`                                                            |
-| Limite   | 10.000 solicitações por dia                                      |
+| Limite   | 2.000 solicitações por dia (10 solicitações por segundo)         |
+| Timeout  | 15 segundos                                                      |
 
 #### Payload
 
